@@ -4,18 +4,34 @@
 #include <stack>
 using namespace std;
 
-/*void visit_Tarjan(int curV, Args_p args) {
-	args->g[curV]->discovery = args->g[curV]->low = args->visited;
-}*/
+void visit_Tarjan(int curV, Args_p args) {
+	list<int>::iterator itv;
+
+	args->g[curV]->discovery = args->g[curV]->low = args->visited++;
+	args->stackV->push(curV);
+	args->g[curV]->stack = 1;
+	for (itv = args->g[curV].adjacentes.begin(); itv != args->g[curV].adjacentes.end(); ++itv) {
+		if (!args->g[*itv]->discovery || args->g[*itv]->stack) {
+			if (!args->g[*itv]->discovery) {
+				visit_Tarjan(*itv, args);
+			}
+			args->g[curV]->low = min(args->g[curV]->low, args->g[*itv]->low)
+		}
+	}
+
+	if (args->g[curV]->discovery == args->g[curV]->low) {
+		args->stackV->pop(curV);
+		args->stackV->pop(curV);
+		args->g[curV]->stack = 1;
+	}
+}
 
 
 void scc_Tarjan(Args_p args) {
-
 	for (int i = 1; i < args->pontos; i++) {
 		if (!args->g[i]->discovery) {
-			//visit_Tarjan(i, args);
+			visit_Tarjan(i, args);
 		}
-		args->pontos = 20;
 	}
 }
 
@@ -33,21 +49,20 @@ int main(int argc, char const *argv[]) {
     grafo[vPai].adjacentes.push_back(vFilho);
   }
 
+  Args_p args = new args_struct;
+  args->g = &grafo;
+  args->visited = 0;
+  args->pontos = pontos;
+  args->stackV = new stack<int>;
 
 
   for (i = 1; i <= pontos; i++) {
     for (it = grafo[i].adjacentes.begin(); it != grafo[i].adjacentes.end(); ++it) {
-      printf("%d %d\n", i, *it);
-    }
+		printf("%d %d\n", i, *it);
+	}
+	}
 
-	Args_p args = new args_struct;
-	args->g = &grafo;
-	args->visited = 0;
-	args->pontos = pontos;
-	args->stacke = new stack<int>;
 	scc_Tarjan(args);
-	printf("oi%d\n", args->pontos);
-}
 
   return 0;
 }
