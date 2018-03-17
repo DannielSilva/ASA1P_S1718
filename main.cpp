@@ -11,9 +11,11 @@ using namespace std;
   int low;
   int stack = 0;
   list<int> adjacentes;
-} Vertice;
+} Vertice;*/
 
-typedef Vertice* Grafo;*/
+typedef int* Par;
+
+typedef Par* Grafo;
 
 typedef struct args_struct {
   //Grafo* g;
@@ -56,16 +58,16 @@ void scc_Tarjan(Args_p args) {
 
 /********************************** MAIN **********************************/
 int main(int argc, char const* argv[]) {
-  // Grafo grafo;
-  int pontos, ligacoes, vPai, vFilho, i;
+  Grafo grafo;
+  int pontosV, ligacoesE, vPai, vFilho, i;
   //list<int>::iterator it;
 
-  scanf("%d\n%d", &pontos, &ligacoes);
+  scanf("%d\n%d", &pontosV, &ligacoesE);
 
-  //grafo = new Vertice[pontos + 1];
-  for (i = 0; i < ligacoes; i++) {
+  grafo = new Par[pontosV];
+  for (i = 0; i < ligacoesE; i++) {
     scanf("%d %d", &vPai, &vFilho);
-    //grafo[vPai].adjacentes.push_front(vFilho);
+    //grafo[vPai - 1] = int[2]{vPai, vFilho};
   }
 
   /*Args_p args = new args_struct;
@@ -74,7 +76,7 @@ int main(int argc, char const* argv[]) {
   args->pontos = pontos;
   args->stackV = new stack<int>;*/
 
-  for (i = 1; i <= pontos; i++) {
+  for (i = 1; i <= pontosV; i++) {
     /*for (it = grafo[i].adjacentes.begin(); it != grafo[i].adjacentes.end(); ++it) {
 				printf("%d %d\n", i, *it);
 			}*/
