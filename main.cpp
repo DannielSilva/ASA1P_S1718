@@ -60,7 +60,7 @@ void scc_Tarjan(Args_p args) {
 /********************************** MAIN **********************************/
 int main(int argc, char const* argv[]) {
   Grafo grafo;
-  int pontosV, ligacoesE, vPai, vFilho, i;
+  int pontosV, ligacoesE, vPai, vFilho, i, j;
   int* tabelaV;
   // list<int>::iterator it;
 
@@ -68,8 +68,16 @@ int main(int argc, char const* argv[]) {
 
   grafo = new int[(ligacoesE + 1) * PAR_S];
   // offset, discovery, low, in stack, SCC number
-  tabelaV = new int[pontosV * VERT_S];
+  tabelaV = new int[(pontosV + 1) * VERT_S];
 
+  //reset a tabela com a informacao de cada vertice
+  for (i = 1; i<(pontos + 1); i++) {
+      for (j=0; j<VERT_S; j++) {
+          tabelaV[index(i, j, VERT_S)] = 0;
+      }
+  }
+
+  //construcao do grafo
   for (i = 1; i <= ligacoesE; i++) {
     scanf("%d %d", &vPai, &vFilho);
     grafo[index(i, 0, PAR_S)] = vPai;
