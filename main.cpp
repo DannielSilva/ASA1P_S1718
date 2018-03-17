@@ -4,8 +4,11 @@
 using namespace std;
 
 #define min(A, B) A < B ? A : B
+#define index(x, y, width) width* x + y
+#define PAR_S 2
+#define VERT_S 5
 
-/********************************** ESTRUTURAS **********************************/
+/******************************** ESTRUTURAS ********************************/
 /*typedef struct vertice {
   int discovery = 0;
   int low;
@@ -13,12 +16,10 @@ using namespace std;
   list<int> adjacentes;
 } Vertice;*/
 
-typedef int* Par;
-
-typedef Par* Grafo;
+typedef int* Grafo;
 
 typedef struct args_struct {
-  //Grafo* g;
+  // Grafo* g;
   int visited, pontos;
   stack<int>* stackV;
 } * Args_p;
@@ -59,19 +60,20 @@ void scc_Tarjan(Args_p args) {
 /********************************** MAIN **********************************/
 int main(int argc, char const* argv[]) {
   Grafo grafo;
-  int pontosV, ligacoesE, vPai, vFilho, i,  colunasInfo = 5, dim;
+  int pontosV, ligacoesE, vPai, vFilho, i;
   int* tabelaV;
-  //list<int>::iterator it;
+  // list<int>::iterator it;
 
   scanf("%d\n%d", &pontosV, &ligacoesE);
 
-  grafo = new Par[pontosV];
-  dim = pontosV*colunasInfo;
-  tabelaV = new int[dim]; //offset, discovery, low, in stack, SCC number
+  grafo = new int[(ligacoesE + 1) * PAR_S];
+  // offset, discovery, low, in stack, SCC number
+  tabelaV = new int[pontosV * VERT_S];
 
-  for (i = 0; i < ligacoesE; i++) {
+  for (i = 1; i <= ligacoesE; i++) {
     scanf("%d %d", &vPai, &vFilho);
-    //grafo[vPai - 1] = int[2]{vPai, vFilho};
+    grafo[index(i, 0, PAR_S)] = vPai;
+    grafo[index(i, 1, PAR_S)] = vFilho;
   }
 
   /*Args_p args = new args_struct;
@@ -81,12 +83,12 @@ int main(int argc, char const* argv[]) {
   args->stackV = new stack<int>;*/
 
   for (i = 1; i <= pontosV; i++) {
-    /*for (it = grafo[i].adjacentes.begin(); it != grafo[i].adjacentes.end(); ++it) {
-				printf("%d %d\n", i, *it);
-			}*/
+    /*for (it = grafo[i].adjacentes.begin(); it != grafo[i].adjacentes.end();
+       ++it) { printf("%d %d\n", i, *it);
+                        }*/
   }
 
-  //scc_Tarjan(args);
+  // scc_Tarjan(args);
 
   return 0;
 }
