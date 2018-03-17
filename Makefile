@@ -1,3 +1,4 @@
+testpath=./Testes
 all: comp run
 
 comp: main.cpp
@@ -9,11 +10,11 @@ run: proj
 clean:
 	rm proj
 
-test1: comp input1.txt
-	./proj < input1.txt
+test1: comp
+	./proj < ${testpath}/input1.txt
 
-test2: comp input2.txt
-	./proj < input2.txt
+test2: comp
+	./proj < ${testpath}/input2.txt
 
-test3: comp input3.txt
-	./proj < input3.txt
+test3: comp
+	./proj < ${testpath}/input3.txt
