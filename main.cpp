@@ -67,7 +67,7 @@ int main(int argc, char const* argv[]) {
   grafo = new Par[pontosV];
   for (i = 0; i < ligacoesE; i++) {
     scanf("%d %d", &vPai, &vFilho);
-    //grafo[vPai - 1] = int[2]{vPai, vFilho};
+    grafo[vPai - 1] = new int[2]{vPai, vFilho};
   }
 
   /*Args_p args = new args_struct;
