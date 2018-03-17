@@ -59,15 +59,19 @@ void scc_Tarjan(Args_p args) {
 /********************************** MAIN **********************************/
 int main(int argc, char const* argv[]) {
   Grafo grafo;
-  int pontosV, ligacoesE, vPai, vFilho, i;
+  int pontosV, ligacoesE, vPai, vFilho, i,  colunasInfo = 5, dim;
+  int* tabelaV;
   //list<int>::iterator it;
 
   scanf("%d\n%d", &pontosV, &ligacoesE);
 
   grafo = new Par[pontosV];
+  dim = pontosV*colunasInfo;
+  tabelaV = new int[dim]; //offset, discovery, low, in stack, SCC number
+
   for (i = 0; i < ligacoesE; i++) {
     scanf("%d %d", &vPai, &vFilho);
-    grafo[vPai - 1] = new int[2]{vPai, vFilho};
+    //grafo[vPai - 1] = int[2]{vPai, vFilho};
   }
 
   /*Args_p args = new args_struct;
