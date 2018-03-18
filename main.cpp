@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <algorithm>
 #include <list>
 #include <stack>
 using namespace std;
@@ -59,34 +60,33 @@ void scc_Tarjan(Args_p args) {
 
 /********************************** MAIN **********************************/
 int main(int argc, char const* argv[]) {
-  Grafo grafo;
-  int pontosV, ligacoesE, vPai, vFilho, i, j;
-  int* tabelaV;
-  // list<int>::iterator it;
+  Grafo grafD, grafO, auxgrafo;
+  int pontosV, ligacoesE, vPai, vFilho, *tabelaV;
 
+  auto ordGraf = [&grafD](int i, int j) -> bool {
+    if (grafD[i * 2] == grafD[j * 2]) {
+      return grafD[index(i, 1, PAR_S)] < grafD[index(j, 1, PAR_S)];
+    }
+    return grafD[index(i, 0, PAR_S)] < grafD[index(j, 0, PAR_S)];
+  };
+
+  //LER INPUT ------------------------------------------------
   scanf("%d\n%d", &pontosV, &ligacoesE);
 
-  grafo = new int[(ligacoesE + 1) * PAR_S];
-  // offset, discovery, low, in stack, SCC number
-  tabelaV = new int[(pontosV + 1) * VERT_S];
+  //CRIACAO DO GRAFO -------------------------------
+  grafD = new int[(ligacoesE + 1) * PAR_S];
+  grafO = new int[(ligacoesE + 1) * PAR_S];
+  auxgrafo = new int[ligacoesE + 1];
 
-  // reset a tabela com a informacao de cada vertice
-  // FAZER UM ITERADOR tipo:
-  /* for (int &x : tabelaV) {
-    x = 0;
-  }*/
-  for (i = 1; i < pontosV + 1; i++) {
-    for (j = 0; j < VERT_S; j++) {
-      tabelaV[index(i, j, VERT_S)] = 0;
-    }
-  }
-
-  // construcao do grafo
-  for (i = 1; i <= ligacoesE; i++) {
+  // Construir grafo do input e auxiliar de indices
+  for (int l = 1; l <= ligacoesE; l++) {
     scanf("%d %d", &vPai, &vFilho);
-    grafo[index(i, 0, PAR_S)] = vPai;
-    grafo[index(i, 1, PAR_S)] = vFilho;
+    grafD[index(l, 0, PAR_S)] = vPai;
+    grafD[index(l, 1, PAR_S)] = vFilho;
+    auxgrafo[l] = l;
   }
+
+  sort(auxgrafo + 1, auxgrafo + ligacoesE + 1, ordGraf);
 
   /*Args_p args = new args_struct;
   args->g = &grafo;
@@ -94,13 +94,34 @@ int main(int argc, char const* argv[]) {
   args->pontos = pontos;
   args->stackV = new stack<int>;*/
 
-  for (i = 1; i <= pontosV; i++) {
+  for (int l = 1; l <= ligacoesE; l++) {
+    grafO[index(l, 0, PAR_S)] = grafD[index(auxgrafo[l], 0, PAR_S)];
+    grafO[index(l, 1, PAR_S)] = grafD[index(auxgrafo[l], 1, PAR_S)];
+    //printf("%d", auxgrafo[l]);
+    //printf("%d %d\n", grafO[index(l, 0, PAR_S)], grafO[index(l, 1, PAR_S)]);
+  }
+
+  //Limpar residuos de criacao do grafo
+  delete[] grafD, auxgrafo;
+
+  //CRIAR TABELA DE VERTICES ------------------------
+  // offset, discovery, low, in stack, SCC number
+  tabelaV = new int[(pontosV + 1) * VERT_S];
+
+  // reset a tabela com a informacao de cada vertice
+  for (int i = 1; i < pontosV + 1; i++) {
+    for (int j = 0; j < VERT_S; j++) {
+      tabelaV[index(i, j, VERT_S)] = 0;
+    }
+  }
+  for (int i = 1; i <= pontosV; i++) {
     /*for (it = grafo[i].adjacentes.begin(); it != grafo[i].adjacentes.end();
        ++it) { printf("%d %d\n", i, *it);
-                        }*/
+    }*/
   }
 
   // scc_Tarjan(args);
 
+  delete[] tabelaV, grafO;
   return 0;
 }
