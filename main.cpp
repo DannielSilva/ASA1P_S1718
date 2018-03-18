@@ -70,14 +70,18 @@ int main(int argc, char const* argv[]) {
   // offset, discovery, low, in stack, SCC number
   tabelaV = new int[(pontosV + 1) * VERT_S];
 
-  //reset a tabela com a informacao de cada vertice
-  for (i = 1; i<(pontos + 1); i++) {
-      for (j=0; j<VERT_S; j++) {
-          tabelaV[index(i, j, VERT_S)] = 0;
-      }
+  // reset a tabela com a informacao de cada vertice
+  // FAZER UM ITERADOR tipo:
+  /* for (int &x : tabelaV) {
+    x = 0;
+  }*/
+  for (i = 1; i < pontosV + 1; i++) {
+    for (j = 0; j < VERT_S; j++) {
+      tabelaV[index(i, j, VERT_S)] = 0;
+    }
   }
 
-  //construcao do grafo
+  // construcao do grafo
   for (i = 1; i <= ligacoesE; i++) {
     scanf("%d %d", &vPai, &vFilho);
     grafo[index(i, 0, PAR_S)] = vPai;
