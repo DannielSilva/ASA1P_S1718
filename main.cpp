@@ -71,7 +71,9 @@ int main(int argc, char const* argv[]) {
   };
 
   //LER INPUT ------------------------------------------------
-  scanf("%d\n%d", &pontosV, &ligacoesE);
+ if (!scanf("%d\n%d", &pontosV, &ligacoesE)) {
+    printf("Deu erro a ler\n");
+ }
 
   //CRIACAO DO GRAFO -------------------------------
   grafD = new int[(ligacoesE + 1) * PAR_S];
@@ -80,7 +82,10 @@ int main(int argc, char const* argv[]) {
 
   // Construir grafo do input e auxiliar de indices
   for (int l = 1; l <= ligacoesE; l++) {
-    scanf("%d %d", &vPai, &vFilho);
+    if (!scanf("%d %d", &vPai, &vFilho)){
+      printf("Deu erro a ler\n");
+    }
+    
     grafD[index(l, 0, PAR_S)] = vPai;
     grafD[index(l, 1, PAR_S)] = vFilho;
     auxgrafo[l] = l;
@@ -102,7 +107,8 @@ int main(int argc, char const* argv[]) {
   }
 
   //Limpar residuos de criacao do grafo
-  delete[] grafD, auxgrafo;
+  delete[] grafD;
+  delete[] auxgrafo;
 
   //CRIAR TABELA DE VERTICES ------------------------
   // offset, discovery, low, in stack, SCC number
@@ -122,6 +128,7 @@ int main(int argc, char const* argv[]) {
 
   // scc_Tarjan(args);
 
-  delete[] tabelaV, grafO;
+  delete[] tabelaV;
+  delete[] grafO;
   return 0;
 }

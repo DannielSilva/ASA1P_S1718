@@ -2,7 +2,7 @@ testpath=./Testes
 all: comp run
 
 comp: main.cpp
-	g++ -std=c++11 -o proj main.cpp
+	g++ -std=c++11 -O3 -Wall -o proj main.cpp -lm
 
 run: proj
 	./proj
