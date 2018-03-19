@@ -20,8 +20,8 @@ using namespace std;
 typedef int* Grafo;
 
 typedef struct args_struct {
-  // Grafo* g;
-  int visited, pontos;
+  Grafo g;
+  int visited, pontosV;
   stack<int>* stackV;
 } * Args_p;
 
@@ -63,6 +63,7 @@ int main(int argc, char const* argv[]) {
   Grafo grafD, grafO, auxgrafo;
   int pontosV, ligacoesE, vPai, vFilho, *tabelaV;
 
+
   auto ordGraf = [&grafD](int i, int j) -> bool {
     if (grafD[i * 2] == grafD[j * 2]) {
       return grafD[index(i, 1, PAR_S)] < grafD[index(j, 1, PAR_S)];
@@ -85,19 +86,13 @@ int main(int argc, char const* argv[]) {
     if (!scanf("%d %d", &vPai, &vFilho)){
       printf("Deu erro a ler\n");
     }
-    
+
     grafD[index(l, 0, PAR_S)] = vPai;
     grafD[index(l, 1, PAR_S)] = vFilho;
     auxgrafo[l] = l;
   }
 
   sort(auxgrafo + 1, auxgrafo + ligacoesE + 1, ordGraf);
-
-  /*Args_p args = new args_struct;
-  args->g = &grafo;
-  args->visited = 0;
-  args->pontos = pontos;
-  args->stackV = new stack<int>;*/
 
   for (int l = 1; l <= ligacoesE; l++) {
     grafO[index(l, 0, PAR_S)] = grafD[index(auxgrafo[l], 0, PAR_S)];
@@ -120,6 +115,13 @@ int main(int argc, char const* argv[]) {
       tabelaV[index(i, j, VERT_S)] = 0;
     }
   }
+
+  Args_p args = new args_struct;
+  args->g = grafO;
+  args->visited = 0;
+  args->pontosV = pontosV;
+  args->stackV = new stack<int>;
+
   for (int i = 1; i <= pontosV; i++) {
     /*for (it = grafo[i].adjacentes.begin(); it != grafo[i].adjacentes.end();
        ++it) { printf("%d %d\n", i, *it);
