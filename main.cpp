@@ -23,6 +23,7 @@ typedef struct args_struct {
   Grafo g;
   int visited, pontosV;
   stack<int>* stackV;
+  int* scc;
 } * Args_p;
 
 /********************************** TARJAN **********************************/
@@ -61,7 +62,8 @@ void scc_Tarjan(Args_p args) {
 /********************************** MAIN **********************************/
 int main(int argc, char const* argv[]) {
   Grafo grafD, grafO, auxgrafo;
-  int pontosV, ligacoesE, vPai, vFilho, *tabelaV;
+  int pontosV, ligacoesE, vPai, vFilho, actV, *tabelaV;
+  Args_p args;
 
 
   auto ordGraf = [&grafD](int i, int j) -> bool {
@@ -81,6 +83,17 @@ int main(int argc, char const* argv[]) {
   grafO = new int[(ligacoesE + 1) * PAR_S];
   auxgrafo = new int[ligacoesE + 1];
 
+  //CRIAR TABELA DE VERTICES ------------------------
+  // offset, discovery, low, in stack, SCC number
+  tabelaV = new int[(pontosV + 1) * VERT_S];
+
+  // reset a tabela com a informacao de cada vertice
+  for (int i = 1; i < pontosV + 1; i++) {
+	  for (int j = 0; j < VERT_S; j++) {
+		  tabelaV[index(i, j, VERT_S)] = 0;
+	  }
+  }
+
   // Construir grafo do input e auxiliar de indices
   for (int l = 1; l <= ligacoesE; l++) {
     if (!scanf("%d %d", &vPai, &vFilho)){
@@ -94,10 +107,16 @@ int main(int argc, char const* argv[]) {
 
   sort(auxgrafo + 1, auxgrafo + ligacoesE + 1, ordGraf);
 
+  actV = 0;
   for (int l = 1; l <= ligacoesE; l++) {
     grafO[index(l, 0, PAR_S)] = grafD[index(auxgrafo[l], 0, PAR_S)];
     grafO[index(l, 1, PAR_S)] = grafD[index(auxgrafo[l], 1, PAR_S)];
-    //printf("%d", auxgrafo[l]);
+	//atualiza a tabela com o offset do vertice
+	if (grafO[index(l, 0, PAR_S)] != actV) {
+		actV = grafO[index(l, 0, PAR_S)];
+		tabelaV[actV] = index(l, 0, PAR_S);
+	}
+	//printf("%d act %d\n", tabelaV[actV], actV);
     //printf("%d %d\n", grafO[index(l, 0, PAR_S)], grafO[index(l, 1, PAR_S)]);
   }
 
@@ -105,22 +124,12 @@ int main(int argc, char const* argv[]) {
   delete[] grafD;
   delete[] auxgrafo;
 
-  //CRIAR TABELA DE VERTICES ------------------------
-  // offset, discovery, low, in stack, SCC number
-  tabelaV = new int[(pontosV + 1) * VERT_S];
-
-  // reset a tabela com a informacao de cada vertice
-  for (int i = 1; i < pontosV + 1; i++) {
-    for (int j = 0; j < VERT_S; j++) {
-      tabelaV[index(i, j, VERT_S)] = 0;
-    }
-  }
-
-  Args_p args = new args_struct;
+  args = new args_struct;
   args->g = grafO;
   args->visited = 0;
   args->pontosV = pontosV;
   args->stackV = new stack<int>;
+  args->scc = new int[pontosV +1];
 
   for (int i = 1; i <= pontosV; i++) {
     /*for (it = grafo[i].adjacentes.begin(); it != grafo[i].adjacentes.end();
