@@ -47,16 +47,20 @@ void visit_Tarjan(int curV, Args_p args) {
       if (!args->tabelaV[discovery(v)]) {
         visit_Tarjan(v, args);
       }
-      // args->tabelaV[low(v)] = min(args->tabelaV[curV]->low,
-      // args->tabelaV[*itv]->low);
+      args->tabelaV[low(curV)] = min(args->tabelaV[low(curV)], args->tabelaV[low(v)]);
     }
   }
 
-  /*if (args->tabelaV[curV]->discovery == args->tabelaV[curV]->low) {
-    poppedV = args->st ackV->top();
+  if (args->tabelaV[discovery(curV)] == args->tabelaV[low(curV)]) {
+    poppedV = args->stackV->top();
     args->stackV->pop();
-    args->tabelaV[curV]->stack = 1;
-}*/
+    args->tabelaV[inStack(poppedV)] = 0;
+    while(curV != poppedV) {
+        poppedV = args->stackV->top();
+        args->stackV->pop();
+        args->tabelaV[inStack(poppedV)] = 0;
+    }
+  }
 }
 
 void scc_Tarjan(Args_p args) {
