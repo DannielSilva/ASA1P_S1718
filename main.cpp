@@ -8,6 +8,13 @@ using namespace std;
 #define index(x, y, width) width* x + y
 #define PAR_S 2
 #define VERT_S 5
+#define offset(v) index(v, 0, VERT_S) //RETORNA INDICE DO GRAFo
+#define discovery(v) index(v, 1, VERT_S)
+#define low(v) index(v, 2, VERT_S)
+#define inStack(v) index(v, 3, VERT_S)
+#define sccNum(v) index(v, 4, VERT_S)
+#define from(l) index(l, 0, PAR_S) //RETORNA VALOR DO V
+#define to(l) index(l, 1, PAR_S)
 
 /******************************** ESTRUTURAS ********************************/
 /*typedef struct vertice {
@@ -23,40 +30,39 @@ typedef struct args_struct {
   Grafo g;
   int visited, pontosV;
   stack<int>* stackV;
-  int* scc;
+  int* scc,* tabelaV;
 } * Args_p;
 
 /********************************** TARJAN **********************************/
 void visit_Tarjan(int curV, Args_p args) {
-  /*list<int>::iterator itv;
-  int poppedV;
+  int poppedV;//aux
 
-  args->g[curV]->discovery = args->g[curV]->low = args->visited++;
+  args->tabelaV[discovery(curV)] = args->tabelaV[low(curV)] = args->visited++;
   args->stackV->push(curV);
-  args->g[curV]->stack = 1;
-  for (itv = args->g[curV]->adjacentes.begin();
-       itv != args->g[curV]->adjacentes.end(); ++itv) {
-    if (!args->g[*itv]->discovery || args->g[*itv]->stack) {
-      if (!args->g[*itv]->discovery) {
-        visit_Tarjan(*itv, args);
-      }
-      args->g[curV]->low = min(args->g[curV]->low, args->g[*itv]->low);
-    }
-  }
+  args->tabelaV[inStack(curV)] = 1;
 
-  if (args->g[curV]->discovery == args->g[curV]->low) {
-    poppedV = args->stackV->top();
+  for (int i = offset(curV) + 1, v=args->g[i]; i < offset(curV + 1); i +=2, v=args->g[i]) { //i = indice no grafo do filho
+    if (!args->tabelaV[discovery(v)] || args->tabelaV[inStack(v)]) {
+      if (!args->tabelaV[discovery(v)]) {
+        visit_Tarjan(v, args);
+      }
+      //args->tabelaV[low(v)] = min(args->tabelaV[curV]->low, args->tabelaV[*itv]->low);
+    }
+}
+
+  /*if (args->tabelaV[curV]->discovery == args->tabelaV[curV]->low) {
+    poppedV = args->st ackV->top();
     args->stackV->pop();
-    args->g[curV]->stack = 1;
-  }*/
+    args->tabelaV[curV]->stack = 1;
+}*/
 }
 
 void scc_Tarjan(Args_p args) {
-  /*for (int i = 1; i < args->pontos; i++) {
-    if (!args->g[i]->discovery) {
+  for (int i = 1; i < args->pontosV+1; i++) {
+    if (!args->tabelaV[discovery(i)]) {
       visit_Tarjan(i, args);
     }
-  }*/
+  }
 }
 
 /********************************** MAIN **********************************/
@@ -84,7 +90,7 @@ int main(int argc, char const* argv[]) {
   auxgrafo = new int[ligacoesE + 1];
 
   //CRIAR TABELA DE VERTICES ------------------------
-  // offset, discovery, low, in stack, SCC number
+  // 0 offset, 1 discovery, 2 low, 3 in stack, 4 SCC number
   tabelaV = new int[(pontosV + 1) * VERT_S];
 
   // reset a tabela com a informacao de cada vertice
@@ -95,7 +101,7 @@ int main(int argc, char const* argv[]) {
   }
 
   // Construir grafo do input e auxiliar de indices
-  for (int l = 1; l <= ligacoesE; l++) {
+  for (int l = 1; l < ligacoesE+1; l++) {
     if (!scanf("%d %d", &vPai, &vFilho)){
       printf("Deu erro a ler\n");
     }
@@ -108,7 +114,7 @@ int main(int argc, char const* argv[]) {
   sort(auxgrafo + 1, auxgrafo + ligacoesE + 1, ordGraf);
 
   actV = 0;
-  for (int l = 1; l <= ligacoesE; l++) {
+  for (int l = 1; l < ligacoesE+1; l++) {
     grafO[index(l, 0, PAR_S)] = grafD[index(auxgrafo[l], 0, PAR_S)];
     grafO[index(l, 1, PAR_S)] = grafD[index(auxgrafo[l], 1, PAR_S)];
 	//atualiza a tabela com o offset do vertice
@@ -129,15 +135,17 @@ int main(int argc, char const* argv[]) {
   args->visited = 0;
   args->pontosV = pontosV;
   args->stackV = new stack<int>;
+  args->tabelaV = tabelaV;
   args->scc = new int[pontosV +1];
 
-  for (int i = 1; i <= pontosV; i++) {
+
+  for (int i = 1; i < pontosV +1; i++) {
     /*for (it = grafo[i].adjacentes.begin(); it != grafo[i].adjacentes.end();
        ++it) { printf("%d %d\n", i, *it);
     }*/
   }
 
-  // scc_Tarjan(args);
+  scc_Tarjan(args);
 
   delete[] tabelaV;
   delete[] grafO;
