@@ -35,16 +35,20 @@ typedef struct args_struct {
 
 /********************************** TARJAN **********************************/
 void visit_Tarjan(int curV, Args_p args) {
-  int poppedV;  // aux
-
-  args->tabelaV[discovery(curV)] = args->tabelaV[low(curV)] = args->visited++;
+  int poppedV, v;  // aux
+  printf("--------------sou o curV %d\n", curV);
+  args->tabelaV[discovery(curV)] = args->tabelaV[low(curV)] = ++args->visited;
+  printf("tenho discovery %d e low %d\n", args->tabelaV[discovery(curV)], args->tabelaV[low(curV)]);
   args->stackV->push(curV);
   args->tabelaV[inStack(curV)] = 1;
-
-  for (int i = offset(curV) + 1, v = args->g[i]; i < offset(curV + 1);
-       i += 2, v = args->g[i]) {  // i = indice no grafo do filho
+  //printf("sou o %d com offset d e o offset do seguint e %d\n",curV,  args->tabelaV[offset((curV+1))]);
+  for (int i = args->tabelaV[offset(curV)]; i != 0 && i < args->tabelaV[offset((curV + 1))]; i += 2) {  // i = indice no grafo do filho
+	  v = args->g[i+1];
+	  printf("sou o curV %d a analisar o filho %d\n", curV, v);
     if (!args->tabelaV[discovery(v)] || args->tabelaV[inStack(v)]) {
+		printf("entrei no if com ou\n");
       if (!args->tabelaV[discovery(v)]) {
+		  printf("sou o %d e vou visitar o %d\n", curV, v);
         visit_Tarjan(v, args);
       }
       args->tabelaV[low(curV)] = min(args->tabelaV[low(curV)], args->tabelaV[low(v)]);
@@ -52,15 +56,19 @@ void visit_Tarjan(int curV, Args_p args) {
   }
 
   if (args->tabelaV[discovery(curV)] == args->tabelaV[low(curV)]) {
-	  args->scc[++args->scc[0]] = 0;
+	  printf("D=%d Off=%d\n",args->tabelaV[discovery(curV)] , args->tabelaV[low(curV)]);
+	  args->scc[++args->scc[0]] = curV;
+	  printf("ESTOU CURV %d n scc %d\n", curV, args->scc[0]);
     do {
 		poppedV = args->stackV->top();
+		printf("vertice poppado %d %d\n", poppedV, args->scc[0]);
     	args->stackV->pop();
     	args->tabelaV[inStack(poppedV)] = 0;
-		args->scc[args->scc[0]] = min(poppedV, args->scc[0]);
+		args->scc[args->scc[0]] = min(poppedV, args->scc[args->scc[0]]);
 		args->tabelaV[sccNum(poppedV)] = args->scc[0];
+
 	} while (curV != poppedV);
-  }
+}
 }
 
 void scc_Tarjan(Args_p args) {
@@ -123,17 +131,17 @@ int main(int argc, char const* argv[]) {
     grafO[from(l)] = grafD[from(auxgrafo[l])];
     grafO[to(l)] = grafD[to(auxgrafo[l])];
     // atualiza a tabela com o offset do vertice
-    if (grafO[from(l)] != actV) {
-      actV = grafO[from(l)];
-      tabelaV[actV] = from(l);
-    }
+	    if (grafO[from(l)] != actV) {
+	      	actV = grafO[from(l)];
+      		tabelaV[offset(actV)] = from(l);
+    	}
     // printf("%d act %d\n", tabelaV[actV], actV);
     // printf("%d %d\n", grafO[from(l)], grafO[to(l)]);
   }
 
   // Limpar residuos de criacao do grafo
   delete[] grafD;
-  delete[] auxgrafo;
+  //delete[] auxgrafo;
 
   scc = new int[pontosV + 1];
   scc[0] = 0;
@@ -145,21 +153,48 @@ int main(int argc, char const* argv[]) {
   args->tabelaV = tabelaV;
   args->scc = scc;
 
-  for (int i = 1; i < pontosV + 1; i++) {
-    /*for (it = grafo[i].adjacentes.begin(); it != grafo[i].adjacentes.end();
-       ++it) { printf("%d %d\n", i, *it);
-    }*/
+  printf("---------\nantes de tarjan\n");
+  for (int i = 1; i < ligacoesE + 1; i++) {
+    printf("%d %d\n", grafO[from(i)], grafO[to(i)]);
   }
 
   scc_Tarjan(args);
 
+for (int i=1; i<scc[0]+1; i++) printf("SCC %d %d\n", i, scc[i]);
 
   for (int i = 1; i < ligacoesE + 1; i++) {
-	grafO[to(i)] = scc[grafO[to(i)]];
-	grafO[from(i)] = scc[grafO[from(i)]];
+	  printf("B %d E MINIMO %d\n",  grafO[to(i)], grafO[from(i)]);
+	  grafO[from(i)] = scc[tabelaV[sccNum(grafO[from(i)])]];
+	  grafO[to(i)] = scc[tabelaV[sccNum(grafO[to(i)])]];
+	printf("A %d E MINIMO %d\n",  grafO[to(i)], grafO[from(i)]);
   }
 
+  printf("---------\ndepois de tarjan\n");
+  for (int i = 1; i < ligacoesE + 1; i++) {
+    printf("%d %d\n", grafO[from(i)], grafO[to(i)]);
+}
 
+grafD = grafO;
+  for (int l = 1; l < ligacoesE + 1; l++) {
+    auxgrafo[l] = l;
+  }
+
+  sort(auxgrafo + 1, auxgrafo + ligacoesE + 1, ordGraf);
+  printf("---------\ndepois do sort\n");
+int pai=0, filho=0;
+  for (int l = 1; l < ligacoesE + 1; l++) {
+    grafO[from(l)] = grafD[from(auxgrafo[l])];
+    grafO[to(l)] = grafD[to(auxgrafo[l])];
+	if ((pai!=grafO[from(l)] ||filho!=grafO[to(l)])&& grafO[from(l)]!=grafO[to(l)]){
+		pai=grafO[from(l)];
+		filho=grafO[to(l)];
+		printf("%d %d\n", grafO[from(l)], grafO[to(l)]);
+	}
+  }
+
+  for (int i = 1; i < ligacoesE + 1; i++) {
+
+  }
 
   delete[] tabelaV;
   delete[] grafO;

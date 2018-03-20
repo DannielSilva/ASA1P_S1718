@@ -18,3 +18,6 @@ test2: comp
 
 test3: comp
 	./proj < ${testpath}/input3.txt
+
+test4: comp
+	./proj < ${testpath}/input4.txt
