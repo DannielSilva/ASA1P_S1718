@@ -52,14 +52,14 @@ void visit_Tarjan(int curV, Args_p args) {
   }
 
   if (args->tabelaV[discovery(curV)] == args->tabelaV[low(curV)]) {
-    poppedV = args->stackV->top();
-    args->stackV->pop();
-    args->tabelaV[inStack(poppedV)] = 0;
-    while(curV != poppedV) {
-        poppedV = args->stackV->top();
-        args->stackV->pop();
-        args->tabelaV[inStack(poppedV)] = 0;
-    }
+	  args->scc[++args->scc[0]] = 0;
+    do {
+		poppedV = args->stackV->top();
+    	args->stackV->pop();
+    	args->tabelaV[inStack(poppedV)] = 0;
+		args->scc[args->scc[0]] = min(poppedV, args->scc[0]);
+		args->tabelaV[sccNum(poppedV)] = args->scc[0];
+	} while (curV != poppedV);
   }
 }
 
@@ -103,6 +103,7 @@ int main(int argc, char const* argv[]) {
     for (int j = 0; j < VERT_S; j++) {
       tabelaV[index(i, j, VERT_S)] = 0;
     }
+
   }
 
   // Construir grafo do input e auxiliar de indices
@@ -135,6 +136,7 @@ int main(int argc, char const* argv[]) {
   delete[] grafD;
   delete[] auxgrafo;
 
+//METER NA TARJAN?
   args = new args_struct;
   args->g = grafO;
   args->visited = 0;
@@ -142,7 +144,7 @@ int main(int argc, char const* argv[]) {
   args->stackV = new stack<int>;
   args->tabelaV = tabelaV;
   args->scc = new int[pontosV + 1];
-
+  args->scc[0]=0;
   for (int i = 1; i < pontosV + 1; i++) {
     /*for (it = grafo[i].adjacentes.begin(); it != grafo[i].adjacentes.end();
        ++it) { printf("%d %d\n", i, *it);
