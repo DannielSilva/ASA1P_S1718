@@ -31,7 +31,7 @@ typedef struct args_struct {
   int visited, pontosV;
   stack<int>* stackV;
   int *scc, *tabelaV;
-} * Args_p;
+} *Args_p;
 
 /********************************** TARJAN **********************************/
 void visit_Tarjan(int curV, Args_p args) {
@@ -74,7 +74,7 @@ void scc_Tarjan(Args_p args) {
 /********************************** MAIN **********************************/
 int main(int argc, char const* argv[]) {
   Grafo grafD, grafO, auxgrafo;
-  int pontosV, ligacoesE, vPai, vFilho, actV, *tabelaV;
+  int pontosV, ligacoesE, vPai, vFilho, actV, *tabelaV, *scc;
   Args_p args;
 
   auto ordGraf = [&grafD](int i, int j) -> bool {
@@ -103,7 +103,6 @@ int main(int argc, char const* argv[]) {
     for (int j = 0; j < VERT_S; j++) {
       tabelaV[index(i, j, VERT_S)] = 0;
     }
-
   }
 
   // Construir grafo do input e auxiliar de indices
@@ -136,15 +135,16 @@ int main(int argc, char const* argv[]) {
   delete[] grafD;
   delete[] auxgrafo;
 
-//METER NA TARJAN?
+  scc = new int[pontosV + 1];
+  scc[0] = 0;
   args = new args_struct;
   args->g = grafO;
   args->visited = 0;
   args->pontosV = pontosV;
   args->stackV = new stack<int>;
   args->tabelaV = tabelaV;
-  args->scc = new int[pontosV + 1];
-  args->scc[0]=0;
+  args->scc = scc;
+
   for (int i = 1; i < pontosV + 1; i++) {
     /*for (it = grafo[i].adjacentes.begin(); it != grafo[i].adjacentes.end();
        ++it) { printf("%d %d\n", i, *it);
@@ -152,6 +152,14 @@ int main(int argc, char const* argv[]) {
   }
 
   scc_Tarjan(args);
+
+
+  for (int i = 1; i < ligacoesE + 1; i++) {
+	grafO[to(i)] = scc[grafO[to(i)]];
+	grafO[from(i)] = scc[grafO[from(i)]];
+  }
+
+
 
   delete[] tabelaV;
   delete[] grafO;
