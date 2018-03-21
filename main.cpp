@@ -188,15 +188,22 @@ int pai=0, filho=0, s=0;
 int filtgrafo_size=min((ligacoesE + 1), (scc[0]*scc[0]));
 int* filtgrafo = new int[filtgrafo_size];
 for (int l = 1; l < ligacoesE + 1; l++) {
-  grafO[from(l)] = grafS[from(auxgrafo[l])];
-  grafO[to(l)] = grafS[to(auxgrafo[l])];
-  printf("i %d %d\n", l, auxgrafo[l]);
+  //grafO[from(l)] = grafS[from(auxgrafo[l])];
+  //grafO[to(l)] = grafS[to(auxgrafo[l])];
+  printf("i devia %d estava %d\n", l, auxgrafo[l]);
+  if ((pai != grafS[from(auxgrafo[l])] || filho != grafS[to(auxgrafo[l])]) && grafS[from(auxgrafo[l])] != grafS[to(auxgrafo[l])] ){
+	  pai = grafS[from(auxgrafo[l])];
+	  filho = grafS[to(auxgrafo[l])];
+	  filtgrafo[s++] = auxgrafo[l];
+	  printf("ii %d %d\n", l, auxgrafo[l]);
+  }
+  printf("pai %d filho %d\n", pai, filho);
 }
 
   for (int l = 1; l < ligacoesE + 1; l++) {
     //grafO[from(l)] = grafS[from(auxgrafo[l])];
     ///grafO[to(l)] = grafS[to(auxgrafo[l])];
-	printf("%d %d\n", grafO[from(l)], grafO[to(l)]);
+	//printf("mal %d %d\n", grafO[from(l)], grafO[to(l)]);
 	/*if ((pai!=grafO[from(l)] ||filho!=grafO[to(l)])&& grafO[from(l)]!=grafO[to(l)]){
 		pai=grafO[from(l)];
 		filho=grafO[to(l)];
