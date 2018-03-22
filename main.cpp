@@ -46,9 +46,15 @@ void visit_Tarjan(int curV, Args_p args) {
   // args->tabelaV[offset((curV+1))]);
   printf("Pos ligaçao ini %d limite pos %d i pos prox %d\n", args->tabelaV[offset(curV)], (args->ligacoesE + 1) * PAR_S, args->tabelaV[offset((curV + 1))]);
   for (int i = args->tabelaV[offset(curV)];
-         i != 0 && i < (args->ligacoesE + 1) * PAR_S &&
-                  (i < args->tabelaV[offset((curV + 1))]);
-       i += 2) {  // i = indice no grafo da ligacao
+         i != 0 &&
+                  (
+					  (i < args->ligacoesE * PAR_S  && curV == args->g[i])
+					  ||
+					  (i == args->ligacoesE * PAR_S)
+					 /*(i < args->ligacoesE * PAR_S  && i != args->tabelaV[offset((curV + 1))])
+					 ||
+					 (i == args->ligacoesE * PAR_S)*/
+			  	  ); i += 2) {  // i = indice no grafo da ligacao
     v = args->g[i + 1];
     printf("sou o curV %d a analisar o filho %d, i=%d\n", curV, v, i);
     if (!args->tabelaV[discovery(v)] || args->tabelaV[inStack(v)]) {
