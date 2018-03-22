@@ -9,7 +9,10 @@ run: proj
 
 clean:
 	rm proj
-
+	
+test: comp
+	read t; \
+	./proj < ${testpath}/$$t.in
 test1: comp
 	./proj < ${testpath}/input1.txt
 
