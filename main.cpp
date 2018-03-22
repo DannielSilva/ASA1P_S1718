@@ -75,7 +75,7 @@ void scc_Tarjan(Args_p args) {
 /********************************** MAIN **********************************/
 int main(int argc, char const* argv[]) {
   Grafo grafD, grafO, grafS, auxgrafo;
-  int pontosV, ligacoesE, vPai, vFilho, actV, *tabelaV, *scc;
+  int pontosV, ligacoesE, vPai, vFilho, actV, *tabelaV, *scc, numE, numSCC;
   Args_p args;
 
   auto ordGraf = [&grafS](int i, int j) -> bool {
@@ -146,10 +146,15 @@ int main(int argc, char const* argv[]) {
 
   scc_Tarjan(args);
 
+  delete args->stackV;
+  delete args;
   for (int i = 1; i < ligacoesE + 1; i++) {
     grafO[from(i)] = scc[tabelaV[sccNum(grafO[from(i)])]];
     grafO[to(i)] = scc[tabelaV[sccNum(grafO[to(i)])]];
   }
+  numSCC = scc[0];
+  delete[] tabelaV;
+  delete[] scc;
 
   grafS = grafO;
 
@@ -159,24 +164,24 @@ int main(int argc, char const* argv[]) {
 
   sort(auxgrafo + 1, auxgrafo + ligacoesE + 1, ordGraf);
 
-  int pai = 0, filho = 0, s = 0;
-  int filtgrafo_size = min((ligacoesE + 1), (scc[0] * scc[0]));
+  vPai = 0, vFilho = 0, numE = 0;
+  int filtgrafo_size = min((ligacoesE + 1), (numSCC * numSCC));
   int* filtgrafo = new int[filtgrafo_size];
   for (int l = 1; l < ligacoesE + 1; l++) {
-    if ((pai != grafS[from(auxgrafo[l])] || filho != grafS[to(auxgrafo[l])]) &&
+    if ((vPai != grafS[from(auxgrafo[l])] || vFilho != grafS[to(auxgrafo[l])]) &&
         grafS[from(auxgrafo[l])] != grafS[to(auxgrafo[l])]) {
-      pai = grafS[from(auxgrafo[l])];
-      filho = grafS[to(auxgrafo[l])];
-      filtgrafo[s++] = auxgrafo[l];
+      vPai = grafS[from(auxgrafo[l])];
+      vFilho = grafS[to(auxgrafo[l])];
+      filtgrafo[numE++] = auxgrafo[l];
     }
   }
 
-  printf("%d\n%d\n", scc[0], s);
-  for (int i = 0; i < s; i++) {
+  printf("%d\n%d\n", numSCC, numE);
+  for (int i = 0; i < numE; i++) {
     printf("%d %d\n", grafO[from(filtgrafo[i])], grafO[to(filtgrafo[i])]);
   }
 
-  delete[] tabelaV;
+  delete[] filtgrafo;
   delete[] grafO;
   delete[] auxgrafo;
   return 0;
