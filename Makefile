@@ -26,4 +26,7 @@ test4: comp
 	./proj < ${testpath}/input4.txt
 
 graph: comp
-	valgrind --tool=massif ./proj < ${testpath}/st04.in
+	valgrind --tool=massif ./proj < ${testpath}/st05.in
+
+leak: comp
+	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all ./proj < ${testpath}/st05.in
