@@ -16,7 +16,7 @@ Assim, representamos o problema como um grafo orientado, no qual aplicaremos um 
 \section{Descrição da Solução}
 Neste grafo, os vértices correspondem a um ponto de distribuição e as arestas às rotas entre os mesmos.
 
-Decidimos realizar a nossa solução em C++, para facilitar a implementação da stack e de algoritmo \textit{sort}, e também para aprofundar o conhecimento nesta linguagem.
+Decidimos fazer a nossa solução em C++, para facilitar a implementação da stack e de algoritmo \textit{sort}, e também para aprofundar o conhecimento nesta linguagem.
 
 \subsection{Estruturas}
 Como no projeto não é necessário adicionar ou remover vértices, o grafo foi representado como sendo um \textit{array} de inteiros \textbf{grafD}, em que cada par corresponde a uma aresta.
@@ -32,7 +32,7 @@ Para armazenar esta informação recorremos a um outro array de inteiros \textbf
 
 Como no output é esperado que cada ligação entre SCC tenha como origem e destino o mínimo de cada scc, temos outro array que armazena isto \textbf{scc}.
 
-Para facilitar o acesso às variáveis necessárias para a chamada recursiva do Tarjan, recorremos ainda a uma estrutura argumentos \textbf{args_struct}. Esta contém ponteiros para o grafo, stack, a tabela de vértices, tabela de mínimos de cada scc, além do tempo atual de visita e as dimensões do grafo.
+Para facilitar o acesso às variáveis necessárias para a chamada recursiva do Tarjan, recorremos ainda a uma estrutura argumentos \textbf{args\_struct}. Esta contém ponteiros para o grafo, stack, a tabela de vértices, tabela de mínimos de cada scc, além do tempo atual de visita e as dimensões do grafo.
 \subsection{Algoritmo}
 Começamos por ler do input o tamanho do grafo (número de vértices e arestas), para poder criar as estruturas \textbf{grafD} e \textbf{tabelaV}. De seguida, populamos o primeiro com o resto das ligações lidas.
 Procedemos à ordenação das arestas para ter a certeza que as com a mesma origem estavam juntas \textbf{grafO}, facilitando percorrer as adjacências de um vértice, atualizando simultaneamente a \textbf{tabelaV}.
