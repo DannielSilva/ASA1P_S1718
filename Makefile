@@ -24,3 +24,6 @@ test3: comp
 
 test4: comp
 	./proj < ${testpath}/input4.txt
+
+graph: comp
+	valgrind --tool=massif ./proj < ${testpath}/st04.in
