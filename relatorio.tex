@@ -37,16 +37,29 @@ Para facilitar o acesso às variáveis necessárias para a chamada recursiva do 
 \subsection{Algoritmo}
 Começamos por ler do input o tamanho do grafo (número de vértices e arestas), para poder criar as estruturas \textbf{grafD} e \textbf{tabelaV}. De seguida, populamos o primeiro com o resto das ligações lidas.
 Procedemos à ordenação das arestas para ter a certeza que as com a mesma origem estavam juntas \textbf{grafO}, facilitando percorrer as adjacências de um vértice, atualizando simultaneamente a \textbf{tabelaV}.
-Aplicamos o Tarjan,
+Aplicamos o Tarjan, atualizando a \textbf{tabelaV} com o número da scc a que o vértice pertence, e o array de minímos \textbf{scc} com o menor vértice de cada scc.
 
+De seguida, substituímos ambos os vértices de cada ligação armazenados em \textbf{grafO} pelo menor valor da scc a que pertencem.
+Como isto atualiza as ligações, estas poderão não estar ordenadas. Assim, ordenamos de novo.
+
+A substituição vai fazer com as ligações \textit{(x,y)} entre scc's sejam identificáveis:
+\begin{itemize}
+	\item Pares \textit{(a,a)} representam ligações dentro da própria scc;
+	\item Pares \textit{(u,v)} \textit{(u,v)} seguidos representam ligações repetidas entre scc's.
+\end{itemize}
+Assim, filtrando os dois casos acima, conseguimos uma lista de ligações únicas entre scc's.
+O tamanho máximo desta será o mínimo entre o número total de ligações $E$ e a soma da progressão aritmética até ao número de scc's $\frac{n(n-1)}{2}$,
+que representa o número máximo possível de ligações entre scc's.
+
+Com isto, conseguimos imprimir o output.
 \section{Análise}
 \subsection{Teórica}
 A parte inicial do programa tem complexidade na inicializaçao
-O Sort tem 
+O Sort tem
 O TArjan tem porque stackV
 Outro sort
 Mais alguns ciclos
-Assim, a complexidade final do algoritmo é \textbf{O(V+E+ElogE)}
+Assim, a complexidade final do algoritmo é \textbf{O(V+ElogE)}
 
 %explicar a stack
 \subsection{Experimental}

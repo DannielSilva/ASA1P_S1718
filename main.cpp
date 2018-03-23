@@ -174,7 +174,7 @@ int main(int argc, char const* argv[]) {
 	grafS = grafO;
 	sort(auxgrafo + 1, auxgrafo + ligacoesE + 1, ordGraf);
 
-	vPai = 0; vFilho = 0; numE = 0; filtgrafo_size = min((ligacoesE + 1), (numSCC * numSCC));
+	vPai = 0; vFilho = 0; numE = 0; filtgrafo_size = min( (ligacoesE + 1), ((numSCC * (numSCC - 1)) / 2) );
 	filtgrafo = new int[filtgrafo_size];
 
 	// Guardar indices de ligacoes entre sccs num array auxiliar
