@@ -1,3 +1,11 @@
+/*******************************************************************************/
+/*********************** ANALISE E SINTESE DE ALGORITMOS ***********************/
+/********************************* 1o Projecto *********************************/
+/*******************************************************************************/
+/*******************************************************************************/
+/*************************** JOAO DANIEL SILVA 86445 ***************************/
+/**************************** FRANCISCO SOUSA 86416 ****************************/
+/*******************************************************************************/
 #include <stdio.h>
 #include <algorithm>
 #include <list>
@@ -155,7 +163,7 @@ int main(int argc, char const* argv[]) {
 	for (int i = 1; i < ligacoesE + 1; i++) {
 		grafO[from(i)] = scc[tabelaV[sccNum(grafO[from(i)])]];
 		grafO[to(i)] = scc[tabelaV[sccNum(grafO[to(i)])]];
-		auxgrafo[l] = l;
+		auxgrafo[i] = i;
 	}
 
 	numSCC = scc[0];
@@ -166,7 +174,7 @@ int main(int argc, char const* argv[]) {
 	grafS = grafO;
 	sort(auxgrafo + 1, auxgrafo + ligacoesE + 1, ordGraf);
 
-	vPai = 0,; vFilho = 0; numE = 0; filtgrafo_size = min((ligacoesE + 1), (numSCC * numSCC));
+	vPai = 0; vFilho = 0; numE = 0; filtgrafo_size = min((ligacoesE + 1), (numSCC * numSCC));
 	filtgrafo = new int[filtgrafo_size];
 
 	// Guardar indices de ligacoes entre sccs num array auxiliar
