@@ -1,7 +1,7 @@
 \documentclass[12pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[portuguese]{babel}
-\usepackage{graphicx}
+\usepackage{graphicx, hyperref}
 
 \author{Grupo 157 \and Francisco Sousa 86416 \& João Daniel Silva 86416}
 \title{Relatório 1º Projecto de ASA}
@@ -23,22 +23,23 @@ Decidimos fazer a nossa solução em C++, para facilitar a implementação da st
 Como no projeto não é necessário adicionar ou remover vértices, o grafo foi representado como sendo um \textit{array} de inteiros \textbf{grafD}, em que cada par corresponde a uma aresta.
 Para cada vértice cghegámos à conclusão que precisávamos de armazenar 5 propriedades:
 \begin{enumerate}
-	\item índice da primeira ocorrência como origem de uma aresta no array grafo;
+	\item índice da primeira ocorrência como origem de uma aresta no \textit{array} grafo;
 	\item tempo de descoberta para o algoritmo de Tarjan;
 	\item menor valor de descoberta atingível por um arco para trás/cruzamento na sub-árvore (low);
-	\item informação se está contido na stack; %EXPLICAR PQ
+	\item informação se está contido na stack;
 	\item número da SCC em que está contido.
 \end{enumerate}
-Para armazenar esta informação recorremos a um outro array de inteiros \textbf{tabelaV}, em que cada 5 elementos corresponde às propriedades de um único vértice.
+Para armazenar esta informação recorremos a um outro \textit{array} de inteiros \textbf{tabelaV}, em que cada 5 elementos corresponde às propriedades de um único vértice.
 
-Como no output é esperado que cada ligação entre SCC tenha como origem e destino o mínimo de cada scc, temos outro array que armazena isto \textbf{scc}.
+Como no output é esperado que cada ligação entre scc's tenha como origem e destino o mínimo de cada scc, temos outro \textit{array} que armazena isto \textbf{scc}.
 
 Para facilitar o acesso às variáveis necessárias para a chamada recursiva do Tarjan, recorremos ainda a uma estrutura argumentos \textbf{args\_struct}. Esta contém ponteiros para o grafo, stack, a tabela de vértices, tabela de mínimos de cada scc, além do tempo atual de visita e as dimensões do grafo.
+
 \subsection{Algoritmo}
 Começamos por ler do input o tamanho do grafo (número de vértices $V$ e arestas $E$), para poder criar as estruturas \textbf{grafD} e \textbf{tabelaV}. De seguida, populamos o primeiro com o resto das ligações lidas.
 Procedemos à ordenação das arestas para ter a certeza que as com a mesma origem estavam juntas \textbf{grafO}, facilitando percorrer as adjacências de um vértice, atualizando simultaneamente a \textbf{tabelaV}.
-Para isto, utilizamos um array auxiliar \textbf{auxgrafo} de tamanho $E$ que simula a ordem das ligações.
-Aplicamos o Tarjan, atualizando a \textbf{tabelaV} com o número da scc a que o vértice pertence, e o array de minímos \textbf{scc} com o menor vértice de cada scc.
+Para isto, utilizamos um \textit{array} auxiliar \textbf{auxgrafo} de tamanho $E$ que simula a ordem das ligações, necessitando de recorrer a uma função \textit{lambda}, evitando colocar o grafo global, e que facilita a comparação de vértices.
+Aplicamos o Tarjan, atualizando a \textbf{tabelaV} com o número da scc a que o vértice pertence, e o \textit{array} de minímos \textbf{scc} com o menor vértice de cada scc.
 
 De seguida, substituímos ambos os vértices de cada ligação armazenados em \textbf{grafO} pelo menor valor da scc a que pertencem.
 Como isto atualiza as ligações, estas poderão não estar ordenadas. Assim, ordenamos de novo.
@@ -62,25 +63,36 @@ Isto ainda precisa de mais $O(E)$ para ordenar concretamente o grafo.
 
 O algoritmo de Tarjan tem complexidade $O(V+E)$. A verificação da presença do vértice na stack é em tempo constante, pois temos esta informação armazenada na \textbf(tabelaV).
 
-A substituição das ligações entre vértices por caminhos entre scc demora $O(E)$, a sua reordenação adiciona tempo $O(Elog(E))$, e a filtragem tempo $O(E)$.
+A substituição das ligações entre vértices por caminhos entre scc's demora $O(E)$, a sua reordenação adiciona tempo $O(Elog(E))$, e a filtragem tempo $O(E)$.
 
 Imprimir o output demora no máximo $O(E)$.
 
 Assim, a complexidade final do algoritmo é \textbf{$O(V+ElogE)$}.
 
 \subsection{Experimental}
+Apoiados pelo gráfico \ref{g1}, podemos verificar que a execução do algoritmo é linear.
+Um pequeno desvio da linearidade é explicado pela aplicação do sort, em que considerámos teoricamente que a complexidade seria \textbf{$O(V+ElogE)$}.
 
+O gráfico \ref{g2} mostra como a memória é alocada e libertada durante a execução do programa. O maior pico ocorre logo na leitura e armazenamento do input, diminui depois da ordenação do grafo, e tem
+um novo aumento devido à criação do \textit{array} para guardar as ligações filtradas entre as scc's.
 \begin{figure}[h]
 			\centering
 			\includegraphics[width=0.5\textwidth]{ss_t(V+E)}
 			\caption{Variação do tempo em função do V+E}
+			\label{g1}
 \end{figure}
 \begin{figure}[h]
 			\centering
 			\includegraphics[width=0.5\textwidth]{ss_m(tex)}
 			\caption{Variação da memória utilizada em função do tempo de execução}
+			\label{g2}
 \end{figure}
 
 \section{Referências}
-
+\begin{itemize}
+	\item Introduction to Algorithms, Third Edition: Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein September 2009 ISBN-10: 0-262-53305-7; ISBN-13: 978-0-262-53305-8
+	\item \url{https://www.geeksforgeeks.org/c-qsort-vs-c-sort/}
+	\item \url{https://stackoverflow.com/questions/7627098/what-is-a-lambda-expression-in-c11/7627330#7627330}
+	\item \url{https://stackoverflow.com/questions/936687/how-do-i-declare-a-2d-\textit{array}-in-c-using-new/28841507#28841507}
+\end{itemize}
 \end{document}
